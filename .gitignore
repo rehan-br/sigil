@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+.dev.vars
+.wrangler/
+.vscode/
+.idea/
+.DS_Store
+*.log
+*.png
+.playwright-mcp
+CLAUDE.md

@@ -1,0 +1,16 @@
+{
+  "name": "sigil",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "pages:dev": "wrangler pages dev dist --kv SIGIL_KV"
+  },
+  "devDependencies": {
+    "vite": "^6.1.0",
+    "wrangler": "^3.99.0"
+  }
+}

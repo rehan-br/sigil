@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sigil &mdash; A Lab by The Developer Guys</title>
+  <meta name="description" content="Trace your own constellation across a small slice of the night sky. An LLM writes its myth in the voice of an old astronomy book. A lab project from The Developer Guys.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sigil.thedeveloperguys.com/">
+  <meta property="og:title" content="Sigil &mdash; A Lab by The Developer Guys">
+  <meta property="og:description" content="Trace a constellation. Let an old astronomer write its myth.">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sigil &mdash; A Lab by The Developer Guys">
+  <meta name="twitter:description" content="Trace a constellation. Let an old astronomer write its myth.">
+
+  <!-- Theme flash prevention -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body data-state="drawing">
+
+<nav>
+  <a href="https://thedeveloperguys.com" class="nav-logo">
+    <span class="logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="5"  cy="6"  r="1.2" fill="currentColor" />
+        <circle cx="13" cy="4"  r="1.2" fill="currentColor" />
+        <circle cx="19" cy="10" r="1.2" fill="currentColor" />
+        <circle cx="9"  cy="14" r="1.2" fill="currentColor" />
+        <circle cx="17" cy="19" r="1.2" fill="currentColor" />
+        <line x1="5"  y1="6"  x2="13" y2="4"  />
+        <line x1="13" y1="4"  x2="19" y2="10" />
+        <line x1="19" y1="10" x2="9"  y2="14" />
+        <line x1="9"  y1="14" x2="17" y2="19" />
+      </svg>
+    </span>
+    <span class="nav-name">Sigil</span>
+  </a>
+
+  <div class="nav-right">
+    <a href="https://thedeveloperguys.com" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      The Developer Guys
+    </a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      Lab &middot; 04
+    </div>
+    <h1>
+      Trace a <em>constellation.</em>
+    </h1>
+    <p class="hero-sub">
+      Click any star, then a second star, to draw a line between them. Cast your sigil and a long-dead astronomer will write its myth.
+    </p>
+  </section>
+
+  <section class="stage">
+    <div id="sky-container">
+      <canvas id="sky-canvas"></canvas>
+
+      <div id="status-row">
+        <span id="state-label">Drawing</span>
+        <div class="status-meta">
+          <span id="count-label">0 stars &middot; 0 lines</span>
+        </div>
+      </div>
+
+      <div id="actions">
+        <button id="undo-btn" type="button" title="Undo (Esc)">Undo</button>
+        <button id="clear-btn" type="button" title="Clear (C)">Clear</button>
+      </div>
+
+      <div id="cast-wrap">
+        <button id="cast-btn" type="button" disabled>Cast sigil</button>
+      </div>
+
+      <!-- Generating overlay -->
+      <div id="generating-overlay" aria-hidden="true">
+        <div class="gen-stack">
+          <div class="gen-rings">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="gen-text">Casting your sigil&hellip;</div>
+        </div>
+      </div>
+
+      <!-- Reveal overlay -->
+      <div id="reveal-overlay" aria-hidden="true">
+        <div class="reveal-stack">
+          <div class="reveal-eyebrow">Sigil &middot; <span id="reveal-id"></span></div>
+          <h2 id="reveal-name"></h2>
+          <p id="reveal-myth"></p>
+          <div class="reveal-actions">
+            <button id="download-btn" type="button" class="reveal-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download
+            </button>
+          </div>
+          <div class="reveal-actions reveal-actions-secondary">
+            <button id="copy-link-btn" type="button" class="reveal-secondary">Copy permalink</button>
+            <a id="reveal-permalink" href="#" class="reveal-secondary as-link">Open permalink</a>
+            <button id="reset-btn" type="button" class="reveal-secondary">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide" id="guide">
+    <div class="guide-header">
+      <div class="label-tag">Instructions</div>
+      <h2 class="sec-title">Three steps, no edits.</h2>
+    </div>
+    <div class="guide-grid">
+      <div class="guide-card guide-card-orange">
+        <span class="guide-num">01</span>
+        <span class="guide-name">Pick a star</span>
+        <span class="guide-action">Click anywhere on the sky.</span>
+      </div>
+      <div class="guide-card guide-card-teal">
+        <span class="guide-num">02</span>
+        <span class="guide-name">Connect another</span>
+        <span class="guide-action">Click a second star to draw a line.</span>
+      </div>
+      <div class="guide-card guide-card-blue">
+        <span class="guide-num">03</span>
+        <span class="guide-name">Cast your sigil</span>
+        <span class="guide-action">An astronomer-poet writes the myth.</span>
+      </div>
+    </div>
+    <p class="guide-keyboard">
+      Or use the keyboard:
+      <kbd>Esc</kbd> undo last line &middot;
+      <kbd>C</kbd> clear &middot;
+      <kbd>Enter</kbd> cast
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">A lab from <a href="https://thedeveloperguys.com">The Developer Guys</a>.</span>
+    <div class="footer-links">
+      <a href="https://thedeveloperguys.com#labs">More labs</a>
+      <a href="https://thedeveloperguys.com#contact">Hire us</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

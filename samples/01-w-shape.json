@@ -1,0 +1,16 @@
+{
+  "id": "ix8tyz2a8ecbm563",
+  "input": {
+    "shape": "5-star W (path of 4 edges)",
+    "starCount": 5,
+    "edgeCount": 4
+  },
+  "model": "gemini-2.5-flash-lite",
+  "name": "Stella Quadrata",
+  "myth": "The ancients called it a testament to the harmony of the spheres; a perfect square of four stars, with a fifth, brighter star at its very centre. It is held that this celestial form, appearing in the frigid months, doth govern the humours of all terrestrial beasts, compelling them to their winter slumber. Its orderly arrangement, they say, reflects the obedience of the lesser fires to the celestial will; and its position, near the great, but ill-tempered, constellation of the Boar's Head, reminds us of the eternal struggle between order and chaos in the ether. Mariners have long looked to it for assurance, seeing in its steadfastness a promise of calm seas and fair winds when the dark of winter presses close.",
+  "notes": [
+    "Voice is on-target: 'doth', 'humours', 'lesser fires', 'ether', 'mariners'.",
+    "Word count ~125 — within 90–140 target.",
+    "Slightly off-spec geometry: model described a square + centre, not a W path. Consider adding a brief topological hint to the prompt (e.g. 'a path connecting the stars in sequence') if shape-fidelity matters."
+  ]
+}
