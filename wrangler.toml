@@ -2,10 +2,7 @@ name = "sigil"
 compatibility_date = "2025-04-01"
 pages_build_output_dir = "dist"
 
-# Replace `id` with the real namespace ID after running:
-#   npx wrangler kv:namespace create SIGIL_KV
-# (and `preview_id` for `wrangler pages dev`).
-[[kv_namespaces]]
-binding = "SIGIL_KV"
-id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_REAL_PREVIEW_KV_NAMESPACE_ID"
+# KV binding for SIGIL_KV is configured in the Cloudflare Pages dashboard
+# (Settings → Functions → KV namespace bindings) rather than here, so the
+# namespace ID isn't checked into source. The runtime binding name is
+# `SIGIL_KV` — match that in the dashboard.
