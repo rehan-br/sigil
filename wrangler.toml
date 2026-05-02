@@ -2,7 +2,11 @@ name = "sigil"
 compatibility_date = "2025-04-01"
 pages_build_output_dir = "dist"
 
-# KV binding for SIGIL_KV is configured in the Cloudflare Pages dashboard
-# (Settings → Functions → KV namespace bindings) rather than here, so the
-# namespace ID isn't checked into source. The runtime binding name is
-# `SIGIL_KV` — match that in the dashboard.
+# KV namespace bound at the SIGIL_KV runtime variable name.
+# `id` was created in the dashboard (Storage & databases → Workers KV).
+# `preview_id` reuses the same namespace; we don't run wrangler pages dev
+# against it (the dev server uses an in-memory Map via vite.config.js).
+[[kv_namespaces]]
+binding = "SIGIL_KV"
+id = "2dab98d4f54d4f8e96024c55e10864cc"
+preview_id = "2dab98d4f54d4f8e96024c55e10864cc"
